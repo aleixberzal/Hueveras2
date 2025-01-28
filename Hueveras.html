@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html leng="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phaser Game with Images</title>
+    <style>
+        /*Le decimos como queremos el fondo */
+        canvas {
+            background-color: #000;
+            display: block;
+            margin: 0 auto;
+            
+        }
+    </style>
+</head>
+<body>
+    
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
+    <script>
+        const config = {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 600,
+            backgroundColor: '#f0f0f0',
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    debug: false
+                }
+            },/*No funciona el código anterior de phaser pero no se porqué...*/
+            scene: {
+                /*Cargamos las escenas o funciones que usaremos mejor dicho*/
+                cargarImg:cargarImg,
+                create: create,
+                update: update
+            }
+        };
+
+        const game = new Phaser.Game(config);
+
+                /*Declaramos las variables necesarias. Keys para inputs.*/
+
+        let player;
+        let keys;
+        let huevos = [];
+        let hueveras = [];
+
+         
+        function cargarImg() {
+            this.load.image('hueveraBlanca', 'huevos/huevera.png');
+            this.load.image('hueveraMarron', 'huevos/huevera.png');
+            this.load.image('HueveraOro', 'huevos/huevera.png');
+
+            this.load.image('huevoBlanco', 'huevos/huevo.png');
+            this.load.image('huevoMarron', 'huevos/huevo.png');
+            this.load.image('huevoOro', 'huevos/huevo.png');
+        }
+
+        function create() {
+            /*Para colocar las imagenes cargadas en la función de preload*/
+            hueveras.push(this.add.sprite(100, 100, 'hueveraBlanca'));
+            hueveras.push(this.add.sprite(100, 200, 'hueveraMarron'));
+            hueveras.push(this.add.sprite(100, 300, 'HueveraOro'));
+
+            /*Usamos las dos primeras variables de la función para colocar las coordenadas que queramos.
+            Y en la última usamos el nombre que le hemos puesto anteriormente a la variable*/
+            huevos.push(this.add.sprite(600, 100, 'huevoBlanco'));
+            huevos.push(this.add.sprite(600, 200, 'huevoMarron'));
+            huevos.push(this.add.sprite(600, 300, 'huevoOro'));
+
+            /*Función que he encontrado para hacer los huevos interactuables: pointerdown y forEach*/
+            huevos.forEach((huevo) => {
+                huevo.setInteractive(); 
+                huevo.on('pointerdown', () => {
+                    const color = colorHuevo(huevo.y);
+                    console.log(`Huevo clickeado: ${color}`); 
+                });
+            });
+
+            /*Le indicamos que el juador sea un rectangulo con estas propiedades*/
+
+            player = this.add.rectangle(400, 300, 50, 50, 0x3498db); 
+            this.physics.add.existing(player); 
+            /*Para que no salga del canvas*/
+            player.body.setCollideWorldBounds(true); 
+            /*Function para detectar los inputs del jugador*/
+            keys = this.input.keyboard.addKeys({
+                up: Phaser.Input.Keyboard.KeyCodes.UP,
+                down: Phaser.Input.Keyboard.KeyCodes.DOWN,
+                left: Phaser.Input.Keyboard.KeyCodes.LEFT,
+                right: Phaser.Input.Keyboard.KeyCodes.RIGHT
+            });
+        }
+
+        function update() {
+            /*En la función update le damos velocidad a nuestro jugador*/
+             player.body.setVelocity(0);
+
+            if (keys.up.isDown) {
+                player.body.setVelocityY(-200);
+            }
+            if (keys.down.isDown) {
+                player.body.setVelocityY(200);
+            }
+            if (keys.left.isDown) {
+                player.body.setVelocityX(-200);
+            }
+            if (keys.right.isDown) {
+                player.body.setVelocityX(200);
+            }
+        }
+/*Dependiendo de la posición del sprite será de un color u otro*/
+        function colorHuevo(posY) {
+            if (posY === 100) {
+                return 'Oro'; 
+            } else if (posY === 200) {
+                return 'Marrón'; 
+            } else if (posY === 300) {
+                return 'Blanco'; 
+            } else {
+                return 'Desconocido'; 
+            }
+        }
+    </script>
+</body>
+</html>
