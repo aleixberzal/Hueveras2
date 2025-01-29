@@ -37,12 +37,14 @@
 
         let hueveraBlanca, hueveraMarron, hueveraOro;
         let huevoBlanco, huevoMarron, huevoOro;
+        let eggShadow;
 
         function preload() {
             /*Imágenes no funcionales por la ruta*/
             this.load.image('hueveraBlanca', 'huevos/huevera.png');
             this.load.image('hueveraMarron', 'huevos/huevera.png');
             this.load.image('HueveraOro', 'huevos/huevera.png');
+            this.load.image('eggShadow', 'huevos/huevera.png');
 
             this.load.image('huevoBlanco', 'huevos/huevo.png');
             this.load.image('huevoMarron', 'huevos/huevo.png');
@@ -54,6 +56,7 @@
             hueveraBlanca = this.add.image(100, 100, 'hueveraBlanca');
             hueveraMarron = this.add.image(100, 200, 'hueveraMarron');
             hueveraOro = this.add.image(100, 300, 'HueveraOro');
+            eggShadow = this.add.image(10000, 10000, 'HueveraOro');
 
             huevoBlanco = this.add.image(500, 100, 'huevoBlanco');
             huevoMarron = this.add.image(600, 100, 'huevoMarron');
@@ -81,11 +84,16 @@
             this.input.on('drag', function (pointer, object, x, y) {
                 object.x = x;
                 object.y = y;
+                eggShadow.x = x +8;
+                eggShadow.y = y +8;
               
             });
             /*En caso de que soltemos los objetos, el tamaño reduce un 30 por ciento*/
             this.input.on('dragend', function (pointer, object, x, y) {
                 object.setScale(1);
+                eggShadow.x = 10000;
+                eggShadow.y = 10000;
+                
                 
                 if (object === huevoBlanco) {
                     /*Le preguntamos con la funcion nueva, si la distancia de los dos objetos coincide por menos de 50 px*/
