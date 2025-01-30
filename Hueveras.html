@@ -38,26 +38,30 @@
         let hueveraBlanca, hueveraMarron, hueveraOro;
         let huevoBlanco, huevoMarron, huevoOro;
         let eggShadow;
-        let points;
+        let points = 0;
+        let draggingWhite = false;
+        let draggingBrown = false;
+        let draggingGold = false;
 
         function preload() {
             /*Imágenes no funcionales por la ruta*/
-            this.load.image('hueveraBlanca', 'huevos/huevera.png');
-            this.load.image('hueveraMarron', 'huevos/huevera.png');
-            this.load.image('HueveraOro', 'huevos/huevera.png');
+            this.load.image('hueveraBlanca', 'huevos/hueveraCarton.png');
+            this.load.image('hueveraMarron', 'huevos/hueveraMarron.png');
+            this.load.image('hueveraOro', 'huevos/hueveraOro.png');
             this.load.image('eggShadow', 'huevos/huevera.png');
 
             this.load.image('huevoBlanco', 'huevos/huevo.png');
-            this.load.image('huevoMarron', 'huevos/huevo.png');
-            this.load.image('huevoOro', 'huevos/huevo.png');
+            this.load.image('huevoMarron', 'huevos/huevoMarron.png');
+            this.load.image('huevoOro', 'huevos/huevoOro.png');
         }
 
         function create() {
+            let rndPos =   Phaser.Math.RND.pick([500, 600, 700]);
             /*Creamos los objetos en las posiciones que queremos pero tenemos que no usar magicNumbers*/
             hueveraBlanca = this.add.image(120, 100, 'hueveraBlanca');
             hueveraMarron = this.add.image(120, 250, 'hueveraMarron');
-            hueveraOro = this.add.image(120, 400, 'HueveraOro');
-            eggShadow = this.add.image(10000, 10000, 'HueveraOro');
+            hueveraOro = this.add.image(120, 400, 'hueveraOro');
+            eggShadow = this.add.image(10000, 10000, 'hueveraOro');
 
             huevoBlanco = this.add.image(500, 100, 'huevoBlanco');
             huevoMarron = this.add.image(600, 100, 'huevoMarron');
@@ -88,7 +92,17 @@
                 object.y = y;
                 eggShadow.x = x +8;
                 eggShadow.y = y +8;
+                
+                if(object === huevoBlanco){
+                    draggingWhite = true;
 
+                }else if (object === huevoMarron){
+                    draggingBrown = true;
+
+                }else if(object === huevoOro){
+                    draggingGold = true;
+ 
+                }
               
             });
             /*En caso de que soltemos los objetos, el tamaño reduce un 30 por ciento*/
@@ -97,15 +111,23 @@
                 
                 eggShadow.x = 10000;
                 eggShadow.y = 10000;
-                
+
+                draggingWhite = false;
+                draggingBrown = false;
+                draggingGold = false;
                 
                 if (object === huevoBlanco) {
                     /*Le preguntamos con la funcion nueva, si la distancia de los dos objetos coincide por menos de 50 px*/
                     if (Phaser.Math.Distance.Between(huevoBlanco.x, huevoBlanco.y, hueveraBlanca.x, hueveraBlanca.y) < 50) {
                         console.log('Has acertado con el huevo blanco');
                         points += 1;
-                        console.log('Tienes' + points + 'puntos!');
+                        console.log('Tienes ' + points + ' puntos!');
+                        huevoBlanco.x = (rndPos =   Phaser.Math.RND.pick([500, 600, 700]));
+                        huevoBlanco.y = 100;
+
+
                     } else {
+                        isBeingDragged = false;
                         console.log('Has fallado con el huevo blanco');
                     }
                 }
@@ -113,9 +135,14 @@
                     if (Phaser.Math.Distance.Between(huevoMarron.x, huevoMarron.y, hueveraMarron.x, hueveraMarron.y) < 50) {
                         console.log('Has acertado con el huevo marron');
                         points += 5;
-                        console.log('Tienes' + points + 'puntos!');
+                        console.log('Tienes ' + points + ' puntos!');
+                        huevoMarron.x = (rndPos =   Phaser.Math.RND.pick([500, 600, 700]));
+                        huevoMarron.y = 100;
+
+
 
                     } else {
+                        isBeingDragged = false;
                         console.log('Has fallado con el huevo marron');
                     }
                 }
@@ -123,24 +150,36 @@
                     if (Phaser.Math.Distance.Between(huevoOro.x, huevoOro.y, hueveraOro.x, hueveraOro.y) < 50) {
                         console.log('Has acertado con el huevo oro');
                         points += 10;
-                        console.log('Tienes' + points + 'puntos!');
+                        console.log('Tienes ' + points + ' puntos!');
+                        huevoOro.x =  (rndPos =   Phaser.Math.RND.pick([500, 600, 700]));
+                        huevoOro.y = 100;
+
+
 
                     } else {
                         console.log('Has fallado con el huevo oro');
+                        draggingWhite = false;
+                        draggingBrown = false;
+                        draggingGold = false;
                     }
                 }
             });
 
-            if (point === 20)  {
-                console.log('Has ganado la partida');
-            }else {
-                eggGenerator();
-            }
+
         }
         
 
         function update() {
-            
+
+            if (!draggingWhite){
+                huevoBlanco.y += 1;
+            }
+            if(!draggingBrown){
+                huevoMarron.y += 1;
+            }
+            if(!draggingGold){
+                huevoOro.y += 1;
+            }            
         }
     </script>
 </body>
