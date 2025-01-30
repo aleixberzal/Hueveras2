@@ -23,7 +23,6 @@
             physics: {
                 default: 'arcade',
                 arcade: {
-                    gravity:{ y: 10},
                     debug: false
                 }
             },
@@ -60,9 +59,9 @@
             hueveraOro = this.add.image(120, 400, 'HueveraOro');
             eggShadow = this.add.image(10000, 10000, 'HueveraOro');
 
-            huevoBlanco = this.physics.add.image(500, 100, 'huevoBlanco');
-            huevoMarron = this.physics.add.image(600, 100, 'huevoMarron');
-            huevoOro = this.physics.add.image(700, 100, 'huevoOro');
+            huevoBlanco = this.add.image(500, 100, 'huevoBlanco');
+            huevoMarron = this.add.image(600, 100, 'huevoMarron');
+            huevoOro = this.add.image(700, 100, 'huevoOro');
             /*Hacemos a los huevos interactivos*/
             huevoBlanco.setInteractive({draggable: true});
             huevoMarron.setInteractive({draggable: true});
@@ -104,8 +103,8 @@
                     /*Le preguntamos con la funcion nueva, si la distancia de los dos objetos coincide por menos de 50 px*/
                     if (Phaser.Math.Distance.Between(huevoBlanco.x, huevoBlanco.y, hueveraBlanca.x, hueveraBlanca.y) < 50) {
                         console.log('Has acertado con el huevo blanco');
-                        object.body.setGravityY(0);
                         points += 1;
+                        console.log('Tienes' + points + 'puntos!');
                     } else {
                         console.log('Has fallado con el huevo blanco');
                     }
@@ -113,8 +112,9 @@
                 if (object === huevoMarron) {
                     if (Phaser.Math.Distance.Between(huevoMarron.x, huevoMarron.y, hueveraMarron.x, hueveraMarron.y) < 50) {
                         console.log('Has acertado con el huevo marron');
-                        object.body.setGravityY(0);
                         points += 5;
+                        console.log('Tienes' + points + 'puntos!');
+
                     } else {
                         console.log('Has fallado con el huevo marron');
                     }
@@ -122,8 +122,9 @@
                 if (object === huevoOro) {
                     if (Phaser.Math.Distance.Between(huevoOro.x, huevoOro.y, hueveraOro.x, hueveraOro.y) < 50) {
                         console.log('Has acertado con el huevo oro');
-                        object.body.setGravityY(0);
                         points += 10;
+                        console.log('Tienes' + points + 'puntos!');
+
                     } else {
                         console.log('Has fallado con el huevo oro');
                     }
