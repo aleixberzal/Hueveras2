@@ -39,13 +39,26 @@
         let huevoBlanco, huevoMarron, huevoOro;
         let eggShadow;
         let points = 0;
+        let granja;
         /*Variables para comprovar si se están arrastrando*/
         let draggingWhite = false;
         let draggingBrown = false;
         let draggingGold = false;
 
+        /*El primer parámetro es una función anónima y el segundo el tiempo que le damos en milisegundos.
+        Podemos pasar funciones anónimas o ponerle nombre*/
+        
+        /*Variables globales para determinar el countDown, el id para llamar el clear más adelante,
+        la variable para acceder al texto y por último la variable para determinar cuando parar el contador, 
+        en nuestro caso, cuando llegue a 0*/
+        let timer = 60; 
+        let refresh_intervalID;
+        let timerText; 
+        let endTime = 0;
+
         function preload() {
             /*Imágenes no funcionales por la ruta*/
+            this.load.image('granja', 'huevos/granja.png');
             this.load.image('hueveraBlanca', 'huevos/hueveraCarton.png');
             this.load.image('hueveraMarron', 'huevos/hueveraMarron.png');
             this.load.image('hueveraOro', 'huevos/hueveraOro.png');
@@ -59,12 +72,13 @@
         function create() {
             let rndPos =   Phaser.Math.RND.pick([500, 600, 700]);
             /*Creamos los objetos en las posiciones que queremos pero tenemos que no usar magicNumbers*/
+            granja = this.add.image(400, 300, 'granja');
+            granja.setDepth(-1);
             hueveraBlanca = this.add.image(120, 100, 'hueveraBlanca');
             hueveraMarron = this.add.image(120, 250, 'hueveraMarron');
             hueveraOro = this.add.image(120, 400, 'hueveraOro');
             /*No cargo la imágen porque no he sabido hacer que funcione :)*/
             eggShadow = this.add.image(10000, 10000, 'huevera');
-
             huevoBlanco = this.add.image(500, 100, 'huevoBlanco');
             huevoMarron = this.add.image(600, 100, 'huevoMarron');
             huevoOro = this.add.image(700, 100, 'huevoOro');
@@ -72,6 +86,25 @@
             huevoBlanco.setInteractive({draggable: true});
             huevoMarron.setInteractive({draggable: true});
             huevoOro.setInteractive({draggable: true});
+                    
+                    // Mostrar el temporizador en la pantalla
+            updatedTimerText = this.add.text(400, 20 , timer, {
+                font: '40px Comic Sans', fill: '#ffffff'
+            });
+
+            // Función que reduce el tiempo
+            function salta() {
+                if (timer > endTime) {
+                    timer--;
+                    updatedTimerText.setText(timer); // Actualiza el texto en pantalla
+                } else {
+                    clearInterval(refresh_intervalID); // Detiene el temporizador cuando llega a 0
+                }
+            }
+
+            // Iniciar el intervalo
+            refresh_intervalID = setInterval(salta, 1000);
+        
             /*En caso de que los huevos estén clicados su tamaño incrementa un 30 por ciento*/
             huevoBlanco.on('pointerdown', function () {
                 console.log('Huevo clickeado: Blanco');
@@ -134,6 +167,7 @@
                     } else {
                         isBeingDragged = false;
                         console.log('Has fallado con el huevo blanco');
+                        timer -= 1;
                     }
                 }
                 if (object === huevoMarron) {
@@ -149,6 +183,7 @@
                     } else {
                         isBeingDragged = false;
                         console.log('Has fallado con el huevo marron');
+                        timer -= 5;
                     }
                 }
                 if (object === huevoOro) {
@@ -163,9 +198,8 @@
 
                     } else {
                         console.log('Has fallado con el huevo oro');
-                        draggingWhite = false;
-                        draggingBrown = false;
-                        draggingGold = false;
+                        timer -= 10;
+                       
                     }
                 }
             });
@@ -173,7 +207,7 @@
 
         }
         
-
+        let updatedTimer;
         function update() {
             /*En caso de que no se estén arrastrando van a caer*/
             if (!draggingWhite){
@@ -185,7 +219,11 @@
             if(!draggingGold){
                 huevoOro.y += 1;
             }            
+
+          
+
         }
+
     </script>
 </body>
 </html>
