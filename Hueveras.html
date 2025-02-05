@@ -23,7 +23,6 @@
             physics: {
                 default: 'arcade',
                 arcade: {
-                    gravity:{ y: 10},
                     debug: false
                 }
             },
@@ -39,35 +38,33 @@
         let hueveraBlanca, hueveraMarron, hueveraOro;
         let huevoBlanco, huevoMarron, huevoOro;
         let eggShadow;
-        let points;
+        let points = 0;  // Inicializamos correctamente los puntos
 
         function preload() {
-            /*Imágenes no funcionales por la ruta*/
-            this.load.image('hueveraBlanca', 'huevos/huevera.png');
-            this.load.image('hueveraMarron', 'huevos/huevera.png');
-            this.load.image('HueveraOro', 'huevos/huevera.png');
-            this.load.image('eggShadow', 'huevos/huevera.png');
+            this.load.image('hueveraBlanca', 'huevos/hueveraBlanca.png');
+            this.load.image('hueveraMarron', 'huevos/hueveraMarron.png');
+            this.load.image('hueveraOro', 'huevos/hueveraOro.png');
+            this.load.image('eggShadow', 'huevos/sombra.png');
 
-            this.load.image('huevoBlanco', 'huevos/huevo.png');
-            this.load.image('huevoMarron', 'huevos/huevo.png');
-            this.load.image('huevoOro', 'huevos/huevo.png');
+            this.load.image('huevoBlanco', 'huevos/huevoBlanco.png');
+            this.load.image('huevoMarron', 'huevos/huevoMarron.png');
+            this.load.image('huevoOro', 'huevos/huevoOro.png');
         }
 
         function create() {
-            /*Creamos los objetos en las posiciones que queremos pero tenemos que no usar magicNumbers*/
             hueveraBlanca = this.add.image(120, 100, 'hueveraBlanca');
             hueveraMarron = this.add.image(120, 250, 'hueveraMarron');
-            hueveraOro = this.add.image(120, 400, 'HueveraOro');
-            eggShadow = this.add.image(10000, 10000, 'HueveraOro');
+            hueveraOro = this.add.image(120, 400, 'hueveraOro');
+            eggShadow = this.add.image(10000, 10000, 'eggShadow');
 
-            huevoBlanco = this.physics.add.image(500, 100, 'huevoBlanco');
-            huevoMarron = this.physics.add.image(600, 100, 'huevoMarron');
-            huevoOro = this.physics.add.image(700, 100, 'huevoOro');
-            /*Hacemos a los huevos interactivos*/
-            huevoBlanco.setInteractive({draggable: true});
-            huevoMarron.setInteractive({draggable: true});
-            huevoOro.setInteractive({draggable: true});
-            /*En caso de que los huevos estén clicados su tamaño incrementa un 30 por ciento*/
+            huevoBlanco = this.add.image(500, 100, 'huevoBlanco');
+            huevoMarron = this.add.image(600, 100, 'huevoMarron');
+            huevoOro = this.add.image(700, 100, 'huevoOro');
+
+            huevoBlanco.setInteractive({ draggable: true });
+            huevoMarron.setInteractive({ draggable: true });
+            huevoOro.setInteractive({ draggable: true });
+
             huevoBlanco.on('pointerdown', function () {
                 console.log('Huevo clickeado: Blanco');
                 this.setScale(1.3);
@@ -84,62 +81,43 @@
             });
 
             this.input.on('drag', function (pointer, object, x, y) {
-               
                 object.x = x;
                 object.y = y;
-                eggShadow.x = x +8;
-                eggShadow.y = y +8;
-
-              
+                eggShadow.x = x + 8;
+                eggShadow.y = y + 8;
             });
-            /*En caso de que soltemos los objetos, el tamaño reduce un 30 por ciento*/
-            this.input.on('dragend', function (pointer, object, x, y) {
-                object.setScale(1);
-                
+
+            this.input.on('dragend', function (pointer, object) {
+                object.setScale(1.0);
                 eggShadow.x = 10000;
                 eggShadow.y = 10000;
-                
-                
-                if (object === huevoBlanco) {
-                    /*Le preguntamos con la funcion nueva, si la distancia de los dos objetos coincide por menos de 50 px*/
-                    if (Phaser.Math.Distance.Between(huevoBlanco.x, huevoBlanco.y, hueveraBlanca.x, hueveraBlanca.y) < 50) {
-                        console.log('Has acertado con el huevo blanco');
-                        object.body.setGravityY(0);
-                        points += 1;
-                    } else {
-                        console.log('Has fallado con el huevo blanco');
-                    }
-                }
-                if (object === huevoMarron) {
-                    if (Phaser.Math.Distance.Between(huevoMarron.x, huevoMarron.y, hueveraMarron.x, hueveraMarron.y) < 50) {
-                        console.log('Has acertado con el huevo marron');
-                        object.body.setGravityY(0);
-                        points += 5;
-                    } else {
-                        console.log('Has fallado con el huevo marron');
-                    }
-                }
-                if (object === huevoOro) {
-                    if (Phaser.Math.Distance.Between(huevoOro.x, huevoOro.y, hueveraOro.x, hueveraOro.y) < 50) {
-                        console.log('Has acertado con el huevo oro');
-                        object.body.setGravityY(0);
-                        points += 10;
-                    } else {
-                        console.log('Has fallado con el huevo oro');
-                    }
+
+                if (Phaser.Math.Distance.Between(huevoBlanco.x, huevoBlanco.y, hueveraBlanca.x, hueveraBlanca.y) < 50 && object === huevoBlanco) {
+                    console.log('Has acertado con el huevo blanco');
+                    points += 1;
+            console.log("Puntos: " + points);
+
+                } else if (Phaser.Math.Distance.Between(huevoMarron.x, huevoMarron.y, hueveraMarron.x, hueveraMarron.y) < 50 && object === huevoMarron) {
+                    console.log('Has acertado con el huevo marron');
+                    points += 5;
+            console.log("Puntos: " + points);
+
+                } else if (Phaser.Math.Distance.Between(huevoOro.x, huevoOro.y, hueveraOro.x, hueveraOro.y) < 50 && object === huevoOro) {
+                    console.log('Has acertado con el huevo oro');
+                    points += 10;
+            console.log("Puntos: " + points);
+
+                } else {
+                    console.log('Has fallado');
+                    
                 }
             });
-
-            if (point === 20)  {
-                console.log('Has ganado la partida');
-            }else {
-                eggGenerator();
-            }
         }
-        
 
         function update() {
-            
+            huevoBlanco.y += 1;
+
+
         }
     </script>
 </body>
